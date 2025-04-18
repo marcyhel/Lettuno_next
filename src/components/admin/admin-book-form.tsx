@@ -78,60 +78,69 @@ export function AdminBookForm({ book, categories, onSubmit, isEditing = false }:
         const coverFile = coverInput?.files?.[0];
 
         try {
-            // Import das funções do Firebase Storage
-            const { uploadFileToFirebase, createCoverFromTitle } = await import('@/lib/firebase-storage');
-
-            // Upload PDF para o Firebase Storage
+            // Upload PDF
             if (pdfFile) {
-                try {
-                    // Upload do arquivo PDF para o Firebase
-                    const fileUrl = await uploadFileToFirebase(pdfFile, 'books');
-                    formData.filePath = fileUrl;
+                const formDataFile = new FormData();
+                formDataFile.append('file', pdfFile);
+
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formDataFile,
+                });
+
+                if (response.ok) {
+                    const { filePath } = await response.json();
+                    formData.filePath = filePath;
 
                     // Gerar capa do PDF se necessário
                     if (!coverFile) {
-                        // Criar uma capa com o título do livro
-                        const title = formData.title || 'Livro';
+                        const pdfCoverData = new FormData();
+                        pdfCoverData.append('isPDF', 'true');
+                        pdfCoverData.append('title', formData.title || 'Livro');
+                        pdfCoverData.append('pdfFile', pdfFile);
 
-                        try {
-                            // Criar uma capa com o título e fazer upload para o Firebase
-                            // const bytes = await pdfFile.arrayBuffer();
-                            // const buffer = Buffer.from(bytes);
+                        const coverResponse = await fetch('/api/upload-image', {
+                            method: 'POST',
+                            body: pdfCoverData,
+                        });
 
-                            // Criar uma capa simples com o título
-                            const coverBuffer = await createCoverFromTitle(title);
-
-                            // Upload da capa para o Firebase
-                            const coverUrl = await import('@/lib/firebase-storage')
-                                .then(module => module.uploadBufferToFirebase(coverBuffer, 'covers', 'cover.jpg'));
-
-                            formData.cover = coverUrl;
-                            formData.coverPath = coverUrl;
-                        } catch (error) {
-                            console.error('Erro ao gerar capa:', error);
-                            // Usar URL da capa padrão
+                        if (coverResponse.ok) {
+                            const { coverPath } = await coverResponse.json();
+                            formData.cover = coverPath;
+                            formData.coverPath = coverPath;
+                        } else {
                             formData.cover = `/covers/default-cover.jpg`;
                             formData.coverPath = `/covers/default-cover.jpg`;
                         }
                     }
-                } catch (error) {
-                    console.error('Erro ao fazer upload do PDF para o Firebase:', error);
+                } else {
+                    console.error('Erro ao fazer upload do PDF');
                     return;
                 }
             }
 
-            // Upload imagem da capa para o Firebase Storage (se houver)
+            // Upload imagem da capa (se houver)
             if (coverFile) {
-                try {
-                    // Upload da imagem para o Firebase
-                    const coverUrl = await uploadFileToFirebase(coverFile, 'covers');
-                    formData.cover = coverUrl;
-                    formData.coverPath = coverUrl;
-                    console.log('formData', formData);
-                } catch (error) {
-                    console.error('Erro ao fazer upload da capa para o Firebase:', error);
+                const formDataCover = new FormData();
+                formDataCover.append('file', coverFile);
+
+                const coverResponse = await fetch('/api/upload-image', {
+                    method: 'POST',
+                    body: formDataCover,
+                });
+
+                if (coverResponse.ok) {
+                    const { coverPath } = await coverResponse.json();
+                    formData.cover = coverPath;
+                    formData.coverPath = coverPath;
+                } else {
+                    console.error('Erro ao fazer upload da capa');
                     return;
                 }
+
+                // formData['monthlyCandidate'] = formData['isMonthlyCandidate'];
+                // delete formData['isMonthlyCandidate'];
+                console.log('formData', formData)
             }
         } catch (error) {
             console.error('Erro ao fazer upload:', error);
