@@ -234,12 +234,11 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": null
+        "value": "postgresql://lettuno_admin:1qsy2gt7@13.217.124.142:5432/lettuno_admin?schema=lettuno_saas"
       }
     }
   },

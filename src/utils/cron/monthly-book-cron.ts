@@ -4,7 +4,7 @@ import { CronJob } from 'cron';
 
 // Cria um cron job que executa no primeiro dia de cada mês às 00:00
 export const monthlyBookCron = new CronJob(
-    '0 * * * * *', // Executa às 00:00 do dia 1 de cada mês
+    '0 0 1 1 * *', // Executa às 00:00 do dia 1 de cada mês
     async () => {
         try {
             console.log('Iniciando seleção do livro do mês...');

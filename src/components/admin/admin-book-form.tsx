@@ -95,8 +95,8 @@ export function AdminBookForm({ book, categories, onSubmit, isEditing = false }:
 
                         try {
                             // Criar uma capa com o título e fazer upload para o Firebase
-                            const bytes = await pdfFile.arrayBuffer();
-                            const buffer = Buffer.from(bytes);
+                            // const bytes = await pdfFile.arrayBuffer();
+                            // const buffer = Buffer.from(bytes);
 
                             // Criar uma capa simples com o título
                             const coverBuffer = await createCoverFromTitle(title);
