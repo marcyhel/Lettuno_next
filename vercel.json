@@ -1,9 +1,16 @@
 {
     "version": 2,
     "outputDirectory": ".next",
+    "buildCommand": "npx prisma generate && npm run build",
     "framework": "nextjs",
     "regions": [
         "gru1"
+    ],
+    "cron": [
+        {
+            "path": "/api/cron/monthly-book",
+            "schedule": "0 1 1 * *"
+        }
     ],
     "headers": [
         {
