@@ -1,27 +1,10 @@
 {
     "version": 2,
-    "buildCommand": "npm install --legacy-peer-deps && npm run build",
     "outputDirectory": ".next",
     "framework": "nextjs",
     "regions": [
         "gru1"
     ],
-    "env": {
-        "AUTH_SECRET": "@auth_secret",
-        "DATABASE_URL": "@database_url",
-        "NEXT_PUBLIC_STRIPE_PUBLIC_KEY": "@next_public_stripe_public_key",
-        "STRIPE_SECRET_KEY": "@stripe_secret_key",
-        "STRIPE_PRICE_ID_BASIC": "@stripe_price_id_basic",
-        "STRIPE_PRICE_ID_PREMIUM": "@stripe_price_id_premium",
-        "NEXT_PUBLIC_STRIPE_PORTAL_CLIENTE": "@next_public_stripe_portal_cliente",
-        "NEXT_PUBLIC_PRODUCT_BASIC": "Básico",
-        "NEXT_PUBLIC_PRODUCT_PREMIUM": "Premium",
-        "URL_NEXT_BASE": "@url_next_base",
-        "NEXT_PUBLIC_URL_NEXT_BASE": "@next_public_url_next_base",
-        "EMAIL_USER": "@email_user",
-        "EMAIL_PASSWORD": "@email_password",
-        "EMAIL_APP_PASSWORD": "@email_app_password"
-    },
     "headers": [
         {
             "source": "/(.*)",
