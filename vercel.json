@@ -6,12 +6,6 @@
     "regions": [
         "gru1"
     ],
-    "crons": [
-        {
-            "path": "/api/cron/cron_book",
-            "schedule": "0 1 1 * *"
-        }
-    ],
     "headers": [
         {
             "source": "/(.*)",
