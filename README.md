@@ -1,76 +1,139 @@
-# Autenticação com NextAuth, Prisma e Next.js 15
+# SaaS de Livros Digitais
 
-Neste mini projeto, você irá implementar a autenticação em um hipotético SaaS de Livros de Programação. Usaremos o NextAuth para gerenciar a autenticação e o Prisma para a interação com o banco de dados, enquanto nosso frameworks será o Next.js 15. O design já está preparado, e o foco será na implementação das funcionalidades sem a necessidade de modificar muito o HTML e o CSS.
+Este é um projeto SaaS (Software as a Service) para gerenciamento de livros digitais, construído com Next.js 15, NextAuth v5, Prisma e PostgreSQL. O sistema inclui funcionalidades de autenticação, assinaturas via Stripe, gerenciamento de livros e livro do mês.
 
-## 🤓 Antes de começar
+## Requisitos
 
-Para este projeto, já temos o template inicial do projeto preparado no repositório. Ao fazer o fork você encontrará todos os arquivos iniciais. 
+- Node.js (versão recomendada: 18.x ou superior)
+- PostgreSQL
+- Conta Stripe para processamento de pagamentos
+- Conta de e-mail para envio de notificações
 
-Apesar de, na Dashboard, existir citação à assinaturas, não é necessário se preocupar com assinaturas e pagamentos nesse Mini Projeto. O foco aqui é autenticação. 
+## Configuração
 
-## 🔨 Requisitos
+### 1. Clone o repositório
 
-- **Faça a instalação e o setup do NextAuth v5 (a última versão é importante).**
-  - O único provedor que você irá usar neste Mini Projeto é o `Credentials` (login com email e senha). 
+```bash
+git clone [URL_DO_REPOSITÓRIO]
+cd mp-saas-next-auth-prisma-next
+```
 
-- **Crie e gerencie sua base de dados (sqlite, mysql ou postgres) usando o Prisma**
-  - Você precisará, pelo menos, de uma tabela de usuários
-	
-    > 👀 **Dicas:**
-    > - Consulte a documentação do NextAuth para entender como configurar o Prisma em conjunto com NextAuth.
+### 2. Instale as dependências
 
-- **Funcionalidade de registrar usuários usando a tela de cadastro**
-  - Use, na medida do possível, _server actions_.
-  - Um usuário deverá possuir _nome_, _email_ e _senha_.
-  - A senha deverá ser criptografada antes de ser salva na base de dados.
-  - A tela de cadastro não pode ser acessível a usuários logados (redirecione ao dashboard)
+```bash
+npm install
+```
 
-      > 👀 **Dicas:**
-      > - O NextAuth auxilia apenas no login do usuário - a implementação do cadastro de usuário deverá ser feita por você.
+### 3. Configure as variáveis de ambiente
 
-- **Funcionalidade de logar usuários usando a tela de login**
-  - Use, na medida do possível, _server actions_.
-  - Ao logar, redirecione o usuário para a tela de dashboard.
-  - A tela de login não pode ser acessível a usuários logados (redirecione ao dashboard)
- 
-- **Funcionalidade de deslogar o usuário.**
+Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
 
-- **Navegação e renderização condicional**
-  - Na home, quando o usuário estiver logado, o botão da Navbar deverá ser `Dashboard`. Quando o usuário estiver deslogado, o botão deverá ser `Login`.
-  - Um usuário deslogado não poderá acessar a Dashboard.
-  - Um usuário logado não poderá acessar as telas de login e cadastro. 
+```env
+# Prisma
+DATABASE_URL="postgresql://[usuario]:[senha]@[host]:[porta]/[banco]?schema=saas_book"
 
-## 🔨 Desafio extra para quem quer ir além
+# NextAuth
+AUTH_SECRET="sua_chave_secreta_aqui"
 
-- Implemente uma página de perfil onde o usuário poderá visualizar e editar suas informações como _nome_ e _senha_. 
+# Stripe
+NEXT_PUBLIC_STRIPE_PUBLIC_KEY=sua_chave_publica_stripe
+STRIPE_SECRET_KEY=sua_chave_secreta_stripe
+STRIPE_PRICE_ID_BASIC=id_do_plano_basico
+STRIPE_PRICE_ID_PREMIUM=id_do_plano_premium
+NEXT_PUBLIC_STRIPE_PORTAL_CLIENTE=url_do_portal_cliente_stripe
+NEXT_PUBLIC_PRODUCT_BASIC="Básico"
+NEXT_PUBLIC_PRODUCT_PREMIUM="Premium"
 
-## 🎨 Design Sugerido
+# URLs
+URL_NEXT_BASE=http://localhost:3000
+NEXT_PUBLIC_URL_NEXT_BASE=http://localhost:3000
 
-O layout está no Figma e já está implementado no projeto. Você não precisará implementá-lo. 
+# Email
+EMAIL_USER=seu_email@gmail.com
+EMAIL_PASSWORD='senha_do_email'
+EMAIL_APP_PASSWORD='senha_de_aplicativo_gmail'
+```
 
-### Figma
+### 4. Configure o banco de dados
 
-🔗 [Link do design](https://www.figma.com/community/file/1431066927390390144/mini-projeto-saas-autenticacao-com-nextauth-prisma-e-next-js-15)
+Execute as migrações do Prisma para criar as tabelas no banco de dados:
 
-## 👉🏽 Sobre esse mini-projeto
+```bash
+npx prisma migrate dev --name init
+```
 
-### O que você irá praticar:
+## Executando o projeto
 
-#### Next.js
+### Ambiente de desenvolvimento
 
-- Conhecimentos sobre a configuração de páginas e rotas dinâmicas.
+```bash
+npm run dev
+```
 
-#### NextAuth
+Este comando inicia o servidor de desenvolvimento Next.js com Turbopack e também executa o script de tarefas cron para gerenciamento do livro do mês.
 
-- Aprender sobre autenticação em aplicações Next.js.
-- Integração do NextAuth com Prisma e base de dados. 
+### Ambiente de produção
 
-#### Prisma
+```bash
+npm run build
+npm run start
+```
 
-- Gerenciar banco de dados de forma eficiente e intuitiva.
-- Criação de modelos e migrações com Prisma.
+## Funcionalidades principais
 
+### Autenticação
 
-### Pré requisitos
+O sistema utiliza NextAuth v5 para autenticação com credenciais (email/senha). Inclui:
+- Registro de usuários
+- Login
+- Recuperação de senha
 
-- Conhecimentos em JavaScript, React e NextJs.
+### Assinaturas
+
+Integração com Stripe para gerenciamento de assinaturas:
+- Plano Básico
+- Plano Premium
+- Portal do cliente para gerenciamento de assinaturas
+
+### Gerenciamento de livros
+
+- Catálogo de livros por categoria
+- Favoritos
+- Progresso de leitura
+- Visualizador de PDF integrado
+
+### Livro do mês
+
+Funcionalidade que destaca um livro mensalmente para os assinantes, gerenciado por tarefas cron automatizadas.
+
+## Estrutura do banco de dados
+
+O projeto utiliza Prisma ORM com PostgreSQL. Os principais modelos incluem:
+- `user`: Informações do usuário e assinatura
+- `book`: Catálogo de livros
+- `Category`: Categorias de livros
+- `monthly_featured_book`: Livro do mês
+- `user_book_reader`: Progresso de leitura do usuário
+
+## Tarefas cron
+
+O projeto inclui tarefas automatizadas para:
+- Gerenciamento do livro do mês
+- Verificação de status de assinaturas
+
+Para executar manualmente a tarefa de seleção do próximo livro do mês:
+
+```bash
+npm run start_book
+```
+
+## Tecnologias utilizadas
+
+- Next.js 15
+- NextAuth v5
+- Prisma ORM
+- PostgreSQL
+- Stripe
+- Tailwind CSS
+- PDF.js para visualização de PDFs
+- Nodemailer para envio de emails
