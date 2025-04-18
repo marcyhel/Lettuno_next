@@ -6,9 +6,9 @@
     "regions": [
         "gru1"
     ],
-    "cron": [
+    "crons": [
         {
-            "path": "/api/cron/monthly-book",
+            "path": "/api/cron/cron_book",
             "schedule": "0 1 1 * *"
         }
     ],
