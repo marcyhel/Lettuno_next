@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "types": [
+      "next-auth"
+    ],
     "lib": [
       "dom",
       "dom.iterable",
@@ -8,25 +11,32 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "noEmit": true,
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "allowSyntheticDefaultImports": true,
+    "outDir": "dist",
     "incremental": true,
+    "target": "ES2020", // ou mantenha ES2017 se quiser, mas ES2020 é mais compatível com ESM
+    "module": "ESNext",
+    "moduleResolution": "bundler", // melhora o suporte para ESM puro
+    "noEmit": true,
     "plugins": [
       {
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./*"
+        "src/*"
       ]
     },
-    "target": "ES2017"
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
   },
   "include": [
     "next-env.d.ts",
@@ -36,5 +46,5 @@
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
 }

@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id                      String                 @id @default(cuid())
+  name                    String
+  email                   String                 @unique
+  password                String
+  emailVerified           DateTime?
+  image                   String?
+  createdAt               DateTime               @default(now())
+  updatedAt               DateTime               @updatedAt
+  role                    String                 @default("USER")
+  favoriteBooks           book[]                 @relation("UserFavoriteBooks")
+  user_book_reader        user_book_reader[]
+  subscriptionId          String?
+  subscriptionStatus      String?                @default("INACTIVE")
+  subscriptionPlan        String?
+  subscriptionPrice       Float?
+  subscriptionEndDate     DateTime?
+  passwordReset           passwordReset?
+  monthly_featured_book   monthly_featured_book? @relation(fields: [monthly_featured_bookId], references: [id])
+  monthly_featured_bookId String?
+}
+
+model user_book_reader {
+  id                      String                 @id @default(cuid())
+  user                    user                   @relation(fields: [userId], references: [id])
+  book                    book                   @relation(fields: [bookId], references: [id])
+  pagesRead               Int                    @default(0)
+  pagesRemaining          Int                    @default(0)
+  pagesTotal              Int                    @default(0)
+  completed               Boolean                @default(false)
+  userId                  String
+  bookId                  String
+  createdAt               DateTime               @default(now())
+  updatedAt               DateTime               @updatedAt
+  monthly_featured_book   monthly_featured_book? @relation(fields: [monthly_featured_bookId], references: [id])
+  monthly_featured_bookId String?
+}
+
+model Category {
+  id                    String                  @id @default(cuid())
+  name                  String                  @unique
+  books                 book[]
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  monthly_featured_book monthly_featured_book[]
+}
+
+model book {
+  id                 String             @id @default(cuid())
+  title              String
+  author             String
+  description        String
+  cover              String?
+  coverPath          String?
+  filePath           String?
+  categoryId         String
+  category           Category           @relation(fields: [categoryId], references: [id])
+  price              Float
+  rating             Float?
+  reviewCount        Int?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  favoriteByUsers    user[]             @relation("UserFavoriteBooks")
+  user_book_readerId user_book_reader[]
+  monthlyCandidate   Boolean?           @default(false)
+}
+
+model passwordReset {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      user     @relation(fields: [userId], references: [id])
+  token     String
+  expires   DateTime
+  createdAt DateTime @default(now())
+}
+
+model monthly_featured_book {
+  id                 String             @id @default(cuid())
+  title              String
+  author             String
+  description        String
+  cover              String?
+  coverPath          String?
+  filePath           String?
+  categoryId         String
+  category           Category           @relation(fields: [categoryId], references: [id])
+  price              Float
+  rating             Float?
+  reviewCount        Int?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  originalBookId     String?
+  user_book_readerId user_book_reader[]
+  monthlyCandidate   Boolean?           @default(false)
+  user               user[]
+}
